@@ -1,0 +1,65 @@
+= 处理器架构概述
+
+本文所设计的NPC是一个符合标准的四级流水线顺序单发射32位RISC-V处理器，将其接入SoC（System on Chip）环境进行了流片环境下的功能验证与性能优化，依照用户级ISA手册#[@unpriv]实现了RV32E标准的大部分指令，并依据特权架构手册#[@priv]实现了部分用于上下文切换与异常处理的CSR（Control Status Register）和用于性能分析的性能计数器。
+
+#figure(
+  image("../images/npc.svg", width: 110%),
+  caption: [处理器架构]
+)
+
+== 指令集架构
+
+RISC-V的四大基础ISA包括RV32E，RV32I，RV64I和RV128I，在小的RV32I处理器核心中，编号较大的一半寄存器通常会占据整个核心面积的$25%$，所以NPC中选择RV32E作为指令集架构，除仅保留寄存器$"x0"-"x15"$外与RV32I完全相同。
+
+非特权架构寄存器包括了通用寄存器$"x0"-"x15"$与$"pc"$，此外NPC中实现了部分特权架构寄存器CSR@tbl:csr，包括mstatus，mcause，mepc，mtvec。
+
+#figure(
+  table(
+    columns: 2,
+    [CSR],     [描述],
+    [mstatus], [机器状态寄存器],
+    [mtvec],   [异常处理程序基地址],
+    [mepc],    [触发异常时保存的pc值],
+    [mcause],  [触发异常的原因]
+  ),
+  caption: [特权架构寄存器]
+)<csr>
+
+NPC中还实现了部分性能计数器@tbl:perf，记录特定性能事件发生的次数与持续的周期，用于性能分析与优化。
+
+#figure(
+  table(
+    columns: 2,
+    [性能计数器],       [描述],
+    [retired instrs], [已退休的指令数],
+    [cycles],   [程序执行总周期数],
+    [fetch stall cycles],    [等待取指周期数],
+    [MEM/JUMP...],  [译码出各种类型指令数],
+    [branch taken], [分支指令中跳转的数量],
+    [memory wait cycles], [访存指令等待周期数],
+    [icache...], [icache命中，未命中和等待周期数],
+    [pipeline...], [流水线各种冒险的次数和停顿周期数]
+  ),
+  caption: [性能计数器]
+)<perf>
+
+RV32E中共有六种指令格式类型，主要包含了整数计算指令，控制流转移指令，内存加载存储指令和环境调用指令，在实践中通常会再加入用于读写CSR的部分指令。
+
+== 微架构
+
+NPC由取指，译码，执行和写回四级流水线构成，其中访存被并入写回阶段。主要通过ICache来优化指令供给，通过流水线技术提高计算效率。
+
+IFU通过ICache读取指令，若命中则一个周期后返回指令，否则需要等待收到AXI总线响应; IDU解码获取的指令，执行需要的通用寄存器读取，并扩展立即数; EXU包含ALU,CSR和AGU。其中ALU负责算术运算结果计算，AGU负责LSU访存地址计算，EX阶段还需读取CSR以及计算跳转目标地址; WBU中包含了LSU的访存状态机部分用于访存，此外WB阶段需要选择对应的结果写回通用寄存器和CSR。
+
+== 总线与外设
+
+不同于传统教科书中流水线常用的集中式控制方法，通过一个全局的控制器来根据各个模块的状态来决定本周期各功能单元该如何工作，NPC中通过分布式$"valid/ready"$总线连接各流水线模块，以IFU与IDU为例@fig:valid，当且仅当某周期内$"ifu.valid" amp amp "idu.ready"$时，在时钟上升沿时握手，IDU拿到IFU的有效数据。分布式控制中仅需考虑与上下游模块的交互，简化了控制逻辑，便于对微架构进行修改，比如加入新的流水线阶段或改为乱序执行处理器。
+
+各功能单元在当周期可以完成一条指令的处理且没有冒险发生时置高valid，即表明自己可以在当周期提供一条有效指令。ready信号表明自己可以接收一次传输，当IDU, EXU正在处理的指令可传递给下一个阶段，或者当周期没有指令的情况下将其ready置高，表示可以接收新的指令。WBU将初始ready置高，若接收一条非访存指令，即当周期可以完成写回，则保持ready为高位; 若为访存指令，在发起AXI请求的同周期拉低ready，直到AXI返回响应的周期重新拉高ready。
+
+#figure(
+  image("../images/valid_ready.svg", width: 90%),
+  caption: [valid/ready总线]
+)<valid>
+
+ICache和LSU向外引出AXI总线接口，用于和外设进行通信。核心中内置CLINT（Core Local Interrupt）提供时钟功能，SoC中包含协议的转接桥用于将AXI转换到SPI，APB，wishbone等各设备对应的协议，SoC中使用到的设备有SRAM，SDRAM，UART和Flash，提供内存，输出和持久化存储的功能。

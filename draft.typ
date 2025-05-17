@@ -1,16 +1,3 @@
-#import "simplepaper.typ": *
-#import "@preview/fletcher:0.4.2": *
-
-#show: project.with(
-  title: "NPC手册",
-  authors: (
-    (
-      name: "rom",
-      organization: [ysyx],
-    ),
-  )
-)
-
 = Introduction
 
 NPC是一个符合标准的四级流水线顺序单发射32位RISC-V处理器，依照用户级ISA手册实现了RV32E标准的大部分指令，并依据特权架构手册实现了实现了部分用于上下文切换与异常处理的CSR（Control Status Register）和用于性能分析的性能计数器。
@@ -18,7 +5,7 @@ NPC是一个符合标准的四级流水线顺序单发射32位RISC-V处理器，
 IFU通过ICache读取指令，若命中则一个周期后返回指令，否则需要等待收到AXI响应; IDU解码获取的指令，执行需要的通用寄存器读取，并扩展立即数; EXU包含ALU,CSR和AGU。其中ALU负责算术运算结果计算，AGU负责LSU访存地址计算，EX阶段还需读取CSR以及计算跳转目标地址; WBU中包含了LSU的访存状态机部分用于访存，此外WB阶段需要选择对应的结果写回通用寄存器和CSR。
 
 #figure(
-  image("./images/npc.svg", width: 95%),
+  image("/images/npc.svg", width: 95%),
   caption: [
     流水线图
   ]
@@ -123,8 +110,6 @@ jyy，ysyx，nju，friends
 
 == pipeline
 
-优先级计数器
-
 - RAW, RAW cycles
 - structural hazards, cycles
 - control hazards
@@ -156,7 +141,7 @@ jyy，ysyx，nju，friends
 运行时环境提供了对硬件相关细节的抽象，以及语言层级的库函数抽象，使得程序的开发更加便利，可移植性更强。AM（Abstract Machine）提供了使得裸机程序能够正常运行在SoC环境中的必要软件接口与实现，包括启动代码，设备驱动等，使得上层软件可以基于接口编写而无需修改在多种不同的接口实现上运行。而Klib提供了程序常用的函数，如printf，atoi，malloc等，提供了裸机下类似c标准库的功能。
 
 #figure(
-  image("infra.svg", width: 70%),
+  image("/images/infra.svg", width: 70%),
   caption: [基础设施与运行时环境]
 )
 
@@ -183,7 +168,7 @@ Klib中通过多个文件实现了输出，字符串处理，内存拷贝，内�
 在SoC中使用Flash作为持久存储，包含了程序完整的镜像，程序的执行过程的内存映像如 所示，首先将栈指针设置为SRAM的顶端，通过XIP模式访问Flash中的一级加载程序（first stage bootloader,fsbl），将二级加载程序加载到SRAM中，而后跳转到二级加载程序，通过二级加载程序将程序的代码段和数据段加载到SDRAM中，最后跳转到SDRAM执行目标程序。
 
 #figure(
-  image("link.svg", width: 80%),
+  image("/images/link.svg", width: 80%),
   caption:[内存映像]
 )
 
@@ -199,7 +184,7 @@ Klib中通过多个文件实现了输出，字符串处理，内存拷贝，内�
   columns: (1fr, 1fr),
   align(center)[
     #figure(
-      image("memory.svg"),
+      image("/images/memory.svg"),
       caption: [
         访存模块
       ]
@@ -237,14 +222,14 @@ SoC中通过Frag和Yanker对AXI请求进行预处理，AXI4Xbar上连接了SRAM�
   columns: (1fr, 1fr),
   align(center)[
     #figure(
-      image("asic.drawio.svg", width:100%),
+      image("/images/asic.svg", width:100%),
       caption: [SoC结构]
     )<soc>
   ],
   align(center)[
       #v(4cm);
     #figure(
-      image("spi.svg", width:110%),
+      image("/images/spi.svg", width:110%),
       caption: [SPI总线传输时序]
     )<spi>
   ]
@@ -255,7 +240,7 @@ SoC中通过Frag和Yanker对AXI请求进行预处理，AXI4Xbar上连接了SRAM�
 SoC中使用SRAM和SDRAM作为内存，其中SRAM只有8KB大小，而MT48LC16M16A2镁光颗粒提供了32MB存储空间，满足当前的使用需求。ysyxSoC中集成了SDRAM控制器的实现，本文依照设备手册实现了周期级精确的颗粒仿真模型，具有与控制器兼容的存储结构，支持读写命令的响应，刷新等操作因涉及电气特性而被设置为空操作。
 
 #figure(
-  image("sdram.svg"),
+  image("/images/sdram.svg"),
   caption: [sdram结构图]
 )<sdram>
 
@@ -287,7 +272,7 @@ SPI-master通过设备寄存器抽象向CPU提供自身支持的功能，其包�
 ysyxSoC中集成了型号为W25Q128JV的spi-flash颗粒仿真模型，用于SoC环境下的功能验证。实际颗粒在ASIC流程中提供了一个轻量化的存储实现，拥有较低的面积和针脚开销的同时也能提供较高的传输速度。
 
 #figure(
-  image("flash.svg", width: 100%),
+  image("/images/flash.svg", width: 100%),
   caption: [
     spi-flash
   ]
@@ -302,7 +287,7 @@ flash模块作为从设备连接到spi-master，以SCK作为输入时钟，以SS
 根据SPI-master手册的规约与寄存器组织 @spi-master，实现XIP状态机如下：
 
 #figure(
-  image("xip.svg", width: 100%),
+  image("/images/xip.svg", width: 100%),
   caption: [XIP状态机]
 )
 
@@ -343,7 +328,7 @@ $
 - 其中第二项代表CPI, 可以通过周期精确的仿真环境统计周期数和动态指令数计算得出，一般通过微体系结构优化提升其倒数IPC。
 - 第三项的倒数即为处理器的主频，通过开源工具yosys综合获得，通过关键路径优化提高主频。
 - 优化关键路径提高主频会使得访存需要的周期变多，这就意味着同一个程序需要的总周期数变多，但同时每个周期的时间变短，具体性能收益需要量化评估。
-- 对IPC进行进一步分解，可以得到处理器的计算模型，包括指令供给，计算效率和数据供给，可以通过性能计数器 @cnt 来统计这些指标。
+- 对IPC进行进一步分解，可以得到处理器的计算模型，包括指令供给，计算效率和数据供给，可以通过性能计数器来统计这些指标。
 - 将PPA的优化放于微架构优化之后，在确定具体微架构实现后再做面积和时序的优化。
 
 == Amdahl's Law
@@ -362,7 +347,7 @@ $"reuse-distance"$衡量了两次内存引用之间不同的引用个数，可�
 
 #figure(
   image(
-    "reuse_distance.png",
+    "/images/reuse_distance.png",
     width: 60%,
   ),
   caption: [
@@ -435,7 +420,7 @@ $"reuse-distance"$衡量了两次内存引用之间不同的引用个数，可�
 通过重用距离评估时间局部性：
 #figure(
   image(
-    "data_reuse_distance.png",
+    "/images/data_reuse_distance.png",
     width: 70%,
   ),
   caption: [data_reuse_distance],
