@@ -80,6 +80,7 @@
   #include("/chapters/chap2.typ")
   #include("/chapters/chap3.typ")
   #include("/chapters/chap4.typ")
+  #include("/chapters/chap5.typ")
 
   // 中英双语参考文献
   // 默认使用 gb-7714-2015-numeric 样式
