@@ -77,6 +77,7 @@
   // 正文
   #show: mainmatter
 
+  #include("/chapters/chap1.typ")
   #include("/chapters/chap2.typ")
   #include("/chapters/chap3.typ")
   #include("/chapters/chap4.typ")
