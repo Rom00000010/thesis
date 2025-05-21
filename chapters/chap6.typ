@@ -9,7 +9,7 @@
   caption: [risv-tests-am]
 )<instr_test>
 
-在SoC环境下运行RT-Thread操作系统。
+在SoC环境下运行RT-Thread操作系统。-
 
 #figure(
   image("../images/rtt.png"),
