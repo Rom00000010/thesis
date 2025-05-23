@@ -1,8 +1,8 @@
-  #import "@preview/modern-nju-thesis:0.4.0": documentclass
+  #import "@preview/modern-nju-thesis:0.4.0": documentclass, 字号
 
   #let (
     // 布局函数
-    twoside, doc, preface, mainmatter, appendix,
+    twoside, fonts, doc, preface, mainmatter, appendix,
     // 页面函数
     fonts-display-page, cover, decl-page, abstract, abstract-en, bilingual-bibliography,
     outline-page, list-of-figures, list-of-tables, notation, acknowledgement,
@@ -25,7 +25,7 @@
       department-en: "School of Computer Science",
       major: "计算机科学与技术",
       major-en: "Computer Science and Technology",
-      supervisor: ("蒋炎岩", "副教授"),
+      supervisor: ("蒋炎岩", " 副教授"),
       supervisor-en: "Associate Professor Yanyan Jiang",
       // supervisor-ii: ("王五", "副教授"),
       // supervisor-ii-en: "Professor My Supervisor",
@@ -34,6 +34,8 @@
     // 参考文献源
     bibliography: bibliography.with("ref.bib"),
   )
+
+  #let font-name = context text.font.first().name
 
   // 文稿设置
   #show: doc
@@ -67,10 +69,9 @@
   )[
     Today, we are experiencing a new golden era in computer architecture. The emergence of the RISC-V Instruction Set Architecture (ISA) has provided a revolutionary new paradigm in processor design. Simultaneously, advancements in modern Electronic Design Automation (EDA) tools have redefined processor design methodologies, enabling agile development. This thesis aims to practically achieve functional-timing co-verification through various verification methods, constructing a comprehensive verification chain. It explores agile development methodologies to offer reusable technical solutions and optimizes micro-architectures specifically for embedded scenarios, quantitatively evaluating the effectiveness of such optimizations. The research also achieves comprehensive support for instruction set architectures and system software, validating the design using complex software such as operating systems. Additionally, the study contributes innovative features and tools back into the community, creating a positive cycle of educational design, student practice, and community iteration. Furthermore, it provides a reference experience covering the entire process through full-stack processor design integrating hardware and software.
 
-Based on the RISC-V ISA, this thesis presents a processor designed to support the RV32E instruction set, establishing supporting infrastructure to enhance the efficiency of processor design and verification. It integrates the processor into a System on Chip (SoC) environment, develops the corresponding runtime environment for program execution, and performs quantified performance analysis and micro-architecture optimization within an SoC environment akin to tape-out. Optimizations for embedded applications specifically target area and timing performance.
+    Based on the RISC-V ISA, this thesis presents a processor designed to support the RV32E instruction set, establishing supporting infrastructure to enhance the efficiency of processor design and verification. It integrates the processor into a System on Chip (SoC) environment, develops the corresponding runtime environment for program execution, and performs quantified performance analysis and micro-architecture optimization within an SoC environment akin to tape-out. Optimizations for embedded applications specifically target area and timing performance.
 
-Through software simulation, both the designed processor core and the SoC platform were tested. Results indicate the correctness of the processor core and the SoC platform, successfully executing the official instruction test suite and booting the RT-Thread operating system. The final area of the processor core is 26710.39$mu m^2$, with an optimized synthesized main frequency of 500 MHz and an Instructions Per Cycle (IPC) rate of 0.022.
-
+    Through software simulation, both the designed processor core and the SoC platform were tested. Results indicate the correctness of the processor core and the SoC platform, successfully executing the official instruction test suite and booting the RT-Thread operating system. The final area of the processor core is 26710.39$mu m^2$, with an optimized synthesized main frequency of 500 MHz and an Instructions Per Cycle (IPC) rate of 0.022.
   ]
 
 
@@ -83,16 +84,37 @@ Through software simulation, both the designed processor core and the SoC platfo
   // 表格目录
   // #list-of-tables()
 
+  #show: u => {
+    mainmatter(
+    heading-size: (14pt, 14pt, 12pt),
+    heading-font: (fonts.黑体, fonts.黑体, fonts.宋体),
+    heading-weight: ("regular", "regular", "bold"),
+    u,
+    );
+  }
+
   // 正文
   #show: mainmatter
 
   #include("/chapters/chap1.typ")
   #include("/chapters/chap2.typ")
   #include("/chapters/chap3.typ")
+    #if twoside {
+    pagebreak() + " "
+  }
   #include("/chapters/chap4.typ")
   #include("/chapters/chap5.typ")
+    #if twoside {
+    pagebreak() + " "
+  }
   #include("/chapters/chap6.typ")
+    #if twoside {
+    pagebreak() + " "
+  }
   #include("/chapters/chap7.typ")
+  
+
+
 
   // 中英双语参考文献
   // 默认使用 gb-7714-2015-numeric 样式
