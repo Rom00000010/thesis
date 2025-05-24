@@ -4,3 +4,5 @@ node_modules/*
 package.json
 package-lock.json
 example.typ
+test.typ
+draft.typ
