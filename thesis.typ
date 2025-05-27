@@ -56,9 +56,9 @@
   #abstract(
     keywords: ("RISC-V", "处理器", "基础设施", "SoC", "性能评估与优化")
   )[
-    当今正处于体系结构的新黄金年代，RISC-V指令集架构的诞生为处理器设计领域提供了革命性的新范式，现代电子设计自动化（Electronic design automation，EDA）工具的进步也重新定义了处理器设计的方法论，使得敏捷开发成为可能。本文意图在技术实践上通过多种验证方式，实现功能-时序的联合验证，构建完整的验证链。探索敏捷开发方法，提供可复用的技术方案；在系统完善层面针对嵌入式场景优化微体系结构，量化评估优化效果。实现完善的指令集架构与系统软件的支持，使用复杂的软件如操作系统进行验证；在学科能力整合与社区反哺方面将创新特性与工具探索反馈至社区，形成教学设计-学生实践-社区迭代的正向循环。并通过软硬件结合的全栈处理器设计实践，提供全流程的参考经验。
+    当今正处于体系结构的新黄金年代，RISC-V指令集架构的诞生为处理器设计领域提供了革命性的新范式，现代电子设计自动化（Electronic design automation，EDA）工具的进步也重新定义了处理器设计的方法论，使得敏捷开发成为可能。由于在学术界，工业界，社区以及其他相关工作多关注高性能计算处理器，闭源商业处理器，以及FPGA流程处理器的设计与验证，缺少ASIC流程嵌入式处理器的设计，验证以及相关的量化研究思路整合。
 
-    本文基于RISC-V指令集架构，设计了一款支持RV32E指令集的处理器，搭建了配套的基础设施以提高处理器设计与验证的效率，接入片上系统（System on Chip，SoC）环境并编写了配套的运行时环境以支撑程序的运行，在类似流片的SoC环境下对处理器进行了量化的性能分析与微体系结构优化，并针对嵌入式场景对处理器的面积与时序进行了优化。
+    因此本文的主要工作为：基于开源工具链进行ASIC流程处理器核心设计，并将其接入开源的片上系统（System on Chip, SoC），实现SoC中的关键设备仿真模型，在配套的基础设施与运行时环境下进行流片前的全系统功能验证。并针对嵌入式场景优化微体系结构，量化评估优化效果，对时序，面积与性能进行权衡。通过处理器系统实现提供全流程的参考经验，并对嵌入式场景下体系结构优化的量化研究思路进行整合。
 
     本文通过软件仿真对设计的处理器核以及SoC平台进行了测试。经测试，处理器核与SoC平台功能设计正确，可以正确执行官方指令测试集并启动RT-Thread操作系统，最终面积为26710.39$mu m^2$，优化后综合主频为500MHz，每周期完成指令数（Instructions Per Cycle，IPC）为0.022。
   ]
@@ -67,11 +67,12 @@
   #abstract-en(
     keywords: ("RISC-V", "Processor", "Infrastructure", "SoC", "performance evaluation", "optimization")
   )[
-    Today, we are experiencing a new golden era in computer architecture. The emergence of the RISC-V Instruction Set Architecture (ISA) has provided a revolutionary new paradigm in processor design. Simultaneously, advancements in modern Electronic Design Automation (EDA) tools have redefined processor design methodologies, enabling agile development. This thesis aims to practically achieve functional-timing co-verification through various verification methods, constructing a comprehensive verification chain. It explores agile development methodologies to offer reusable technical solutions and optimizes micro-architectures specifically for embedded scenarios, quantitatively evaluating the effectiveness of such optimizations. The research also achieves comprehensive support for instruction set architectures and system software, validating the design using complex software such as operating systems. Additionally, the study contributes innovative features and tools back into the community, creating a positive cycle of educational design, student practice, and community iteration. Furthermore, it provides a reference experience covering the entire process through full-stack processor design integrating hardware and software.
+    We are currently experiencing a new golden age in computer architecture. The emergence of the RISC-V instruction set architecture has introduced a revolutionary new paradigm to the processor design field, while advancements in modern Electronic Design Automation (EDA) tools have reshaped the methodologies for processor design, making agile development feasible. However, much attention from academia, industry, and communities has been concentrated on the design and verification of high-performance computing processors, closed-source commercial processors, and FPGA-based processors, leading to a lack of integrated design, verification, and quantitative research methodologies specifically for ASIC-based embedded processors.
 
-    Based on the RISC-V ISA, this thesis presents a processor designed to support the RV32E instruction set, establishing supporting infrastructure to enhance the efficiency of processor design and verification. It integrates the processor into a System on Chip (SoC) environment, develops the corresponding runtime environment for program execution, and performs quantified performance analysis and micro-architecture optimization within an SoC environment akin to tape-out. Optimizations for embedded applications specifically target area and timing performance.
+    Therefore, the primary contributions of this paper are: designing an ASIC-based processor core using an open-source toolchain, integrating it into an open-source System on Chip (SoC), implementing simulation modules for key SoC components, and conducting comprehensive pre-tape-out functional verification in a supporting infrastructure and runtime environment. Additionally, this paper optimizes the microarchitecture specifically for embedded scenarios, quantitatively evaluates optimization outcomes, and balances timing, area, and performance metrics. It provides a complete processor system implementation as a reference and integrates quantitative research methodologies for architecture optimization in embedded scenarios.
 
-    Through software simulation, both the designed processor core and the SoC platform were tested. Results indicate the correctness of the processor core and the SoC platform, successfully executing the official instruction test suite and booting the RT-Thread operating system. The final area of the processor core is 26710.39$mu m^2$, with an optimized synthesized main frequency of 500 MHz and an Instructions Per Cycle (IPC) rate of 0.022.
+    Through software simulations, the designed processor core and SoC platform have been thoroughly tested. The testing results demonstrate that the functional design of the processor core and SoC platform is correct. The system successfully executes the official instruction test suite and boots the RT-Thread operating system. The final processor area is 26710.39 µm², achieving an optimized synthesis frequency of 500MHz and an Instructions Per Cycle (IPC) of 0.022.
+
   ]
 
 
@@ -92,6 +93,9 @@
     u,
     );
   }
+
+  #set list(indent: 2em)
+  #set enum(indent: 2em)
 
   // 正文
   #show: mainmatter

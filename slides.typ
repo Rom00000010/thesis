@@ -32,16 +32,8 @@
 
 #title-slide()
 
-#outline-slide()
-
-
 = 绪论
 
-== 概述
-
-*关键词*：#("RISC-V", "处理器", "基础设施", "SoC", "性能评估与优化")
-
-*RISC-V指令集架构*和*电子设计自动化*（EDA）工具的进步为处理器设计领域带来了革命性的改变，本研究进行特定应用集成电路（ASIC）流程的*处理器设计*，搭建配套的*基础设施*和*运行时环境*，并针对嵌入式场景进行*性能评估与优化*，最终进行*硅前验证*，提供了*处理器前端设计全栈*的参考经验。
 
 == 背景
 
@@ -102,6 +94,8 @@
   - 一生一芯项目 —— #gray[一生一芯团队]
 
 == 研究思路与动机
+
+*关键词*：#("RISC-V；处理器；基础设施；SoC；性能评估与优化",)
 
 - 完善指令集架构与系统软件支持
 
@@ -174,7 +168,7 @@
 
 = 访存模块与SoC环境
 
-== 概述
+== 访存模块
 
   #grid(
   columns: (1fr, 1fr),
@@ -228,14 +222,16 @@
 
   )
 
-== SDRAM
+== 外设与访存延迟校正
 
 #figure(
   image("/images/sdram.svg", width: 85%),
   caption: [SDRAM结构图]
 )<sdram>
 
-== SPI-Flash
+== <touying:hidden>
+
+#subsection("SPI-Flash")
 
 - *片上*SPI-master
 - *片外*SPI-slave：Flash，slave1，slave2...
@@ -282,7 +278,9 @@
   caption: [XIP状态机流程图]
 )<xip>
 
-== 访存延迟校正
+== <touying:hidden>
+
+#subsection("访存延迟校正")
 
 - 处理器与外设运行在*不同的频率*下
 - Verilator*单时钟域*仿真
@@ -341,7 +339,7 @@ $
   caption: [单周期处理器性能评估],
 )
 
-== 时间局部性评估
+== 局部性与Cache
 
 - *重用距离*
 
@@ -370,9 +368,10 @@ $
   ]
 )
 
-== Cache
 
-- *Cache设计*：
+#subsection("Cache")
+
+- *Cache设计因素*：
   - 块大小：同处理器字长
   - 容量
   - 映射机制
@@ -398,7 +397,7 @@ $
 
 == <touying:hidden>
 
-#subsection[实现]
+#subsection[ICache开销]
 
 #figure(
   table(
@@ -410,6 +409,10 @@ $
   ),
   caption: [基于nangate45单元的8行直接映射缓存的面积构成]
 )<area>
+
+== <touying:hidden>
+
+#subsection[ICache收益]
 
 #figure(
   table(
@@ -433,7 +436,7 @@ $
   caption: [cache性能评估], 
 )
 
-== 多周期与时序面积优化
+== 时序面积与流水线
 
 高级体系结构优化如*流水线*,*乱序处理器*均以多周期为基础。针对关键路径进行时序优化，并减少面积开销。
 
@@ -459,15 +462,16 @@ $
 )<csr>
 
 
-- *拓扑路径*
+#subsection[拓扑路径]
 
 #figure(
   image("/images/ltp.png"),
   caption:[CSR模块最长拓扑路径]
 )<ltp>
 
+== <touying:hidden>
 
-== 流水线
+#subsection[流水线]
 
 功能单元在同一个周期同时工作，处理不同指令的同一阶段，理想情况下每周期完成一条指令，实现*指令级并行*，提高计算效率。
 
@@ -494,7 +498,6 @@ $
 )<pipeline>
 
 - 进一步优化，需要更精确的*性能计数器架构*。
-- *开销*：时序与面积
 
 = 实验与展望
 
@@ -546,7 +549,7 @@ caption: [流水线时序报告]
 *总面积*： 26710.39$mu m^2$ 
 
 
-- *IPC*
+#subsection[IPC]
 #figure(
   table(
     columns: (auto, auto, 1fr, 1fr, 1fr),  // 关键行

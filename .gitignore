@@ -1,4 +1,5 @@
 *.pdf
+*.pptx
 notes.md
 node_modules/*
 package.json
