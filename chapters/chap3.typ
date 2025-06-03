@@ -48,7 +48,7 @@ SoC是一种集成电路，将计算机系统的大部分或全部关键组件�
     caption: [SPI总线传输时序]
   )<spi>
 
-ysyxSoC的结构如@fig:soc 所示，其通过Frag和Yanker对AXI请求进行预处理以便后续将AXI请求转换为其他总线协议对应的请求，AXI4Xbar上连接了SRAM和AXI到APB的转接桥，并将APBdelay置于Xbar上方以附加延迟，其余设备均挂在APBXbar上。其中SRAM为AXI接口，作为高速存储器，一个周期即可完成读写；UART为APB接口，用于进行串行输出；SDRAM控制器为APB接口；SPI-master为wishbone接口；flash本身为SPI接口。
+ysyxSoC的结构如@fig:soc 所示，CPU和AXI4Xbar之间的Fragment和Yanker对AXI请求进行预处理以便后续将AXI请求转换为其他总线协议对应的请求，AXI4Xbar上连接了SRAM和AXI到APB的转接桥，并将APBdelay置于Xbar上方以附加延迟，其余设备均挂在APBXbar上。其中SRAM为AXI接口，作为高速存储器，一个周期即可完成读写；UART为APB接口，用于进行串行输出；SDRAM控制器为APB接口；SPI-master为wishbone接口；flash本身为SPI接口。
 
   #figure(
     image("/images/asic.svg", width:80%, height: 55%),
@@ -99,7 +99,7 @@ SDRAM的结构如@fig:sdram 所示，其存储阵列由4个bank构成，每个ba
 ysyxSoC中集成了型号为W25Q128JV#[@Flash_manual]的spi-Flash颗粒仿真模型，用于SoC环境下的功能验证。其实际颗粒在ASIC流程中提供了一个轻量化的存储实现，拥有较低的面积和布局布线开销的同时也能提供较高的传输速度。
 
 #figure(
-  image("/images/flash.svg", width: 100%),
+  image("/images/flash.svg", width:80%),
   caption: [
     SPI-Flash
   ]

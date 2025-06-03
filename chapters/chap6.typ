@@ -53,7 +53,7 @@ caption: [流水线时序报告]
 // todo: picture name, bar discription
 
 #figure(
-  image("../images/core_area.png"),
+  image("../images/core_area.png", width: 70%),
   caption: [NPC各模块面积]
 )<area>
 

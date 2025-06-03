@@ -81,7 +81,7 @@ NPC中通过分布式valid/ready总线连接各流水线模块，不同于传统
 各功能单元在当周期可以完成一条指令的处理且没有冒险发生时置高valid，即表明自己可以在当周期提供一条有效指令。ready信号表明自己可以接收一次传输，当IDU, EXU正在处理的指令可传递给下一个阶段，或者当周期没有正在处理指令的情况下将其ready置高，表示可以接收新的指令。WBU将初始ready置高，若接收一条非访存指令，即当周期可以完成写回，则保持ready为高位; 若为访存指令，在发起AXI请求的同周期拉低ready，直到AXI返回响应的周期重新拉高ready。
 
 #figure(
-  image("../images/valid_ready.svg", width: 90%),
+  image("../images/valid_ready.svg", width: 80%),
   caption: [IFU与IDU基于valid/ready总线通信]
 )<valid>
 

@@ -42,7 +42,7 @@
 #figure(
   image(
     "/images/reuse_distance.png",
-    width: 100%,
+    width: 70%,
   ),
   caption: [
     指令重用距离
@@ -81,7 +81,7 @@
 )<cachesim>
 
 #figure(
-  image("../images/cache_miss.png"),
+  image("../images/cache_miss.png", width: 70%),
   caption:[不同配置下cache的命中率构成]
 )<cache_sim>
 
@@ -125,7 +125,8 @@
 根据性能计数器可以看出访存指令带来的停顿周期也有约$20%$的占比，故对访存局部性的优化空间也进行评估。非存储器类型的设备寄存器中的值即使不经过读写也可能异步更新（比如SPI-master的忙碌状态），所以每次读写都需要在设备寄存器中进行而不能加载到缓存中，而存储器类型的设备需要进行缓存，SRAM的访问延迟只有一个周期，所以我们只对SDRAM的访问序列进行评估。通过重用距离评估其时间局部性：
 #figure(
   image(
-    "/images/data_reuse_distance.png", 
+    "/images/data_reuse_distance.png",
+    width: 70% 
   ),
   caption: [数据重用距离],
 )
@@ -174,7 +175,7 @@ $
 使用Yosys对处理器进行逻辑综合，将其映射到45nm的开源工艺库nangate45，得到门级网表与面积报告，并使用iEDA#[@ieda]对其进行扇出优化与时序分析。
 
 #figure(
-  image("../images/csr.png"),
+  image("../images/csr.png", width: 85%),
   caption:[CSR模块部分拓扑结构]
 )<csr>
 
